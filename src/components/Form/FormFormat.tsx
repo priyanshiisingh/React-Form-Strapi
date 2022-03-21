@@ -22,29 +22,6 @@ import InputReqField from "../RequiredFields/InputReqField";
 import SelectOptions from "../SelectOptions/SelectOptionsFormat";
 import { TextAreaField, PrePronounField } from "../TextArea/TextAreaFormat";
 
-// import URL from "./UrlFile";
-
-//firebase
-import { getDatabase, set } from "firebase/database";
-import {
-  collection,
-  addDoc,
-  Timestamp,
-  updateDoc,
-  getDocs,
-  getDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore";
-import {
-  getStorage,
-  uploadBytes,
-  ref,
-  getDownloadURL,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { db } from "./Firestore";
-
 interface FormProps {
   resume: FileList;
   resumeURL: any;
@@ -74,50 +51,56 @@ const FormFormat = () => {
 
   const [verifyCaptcha, setVerifyCaptcha] = useState(false);
 
-  const onSubmit: SubmitHandler<FormProps> = async (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormProps> = async (formData) => {
+    console.log(formData);
 
-    async function UploadForm(data: any) {
-      const resumeDoc = data.resume[0];
-      const storage = getStorage();
-      const storageRef = ref(storage, resumeDoc.name);
-      const upload = uploadBytesResumable(storageRef, resumeDoc);
+    let file: File = formData.resume[0];
+    console.log("file", file);
+    const fileEntry = new FormData();
+    fileEntry.append("resume", file);
 
-      try {
-        const uploadUrl = () => {
-          getDownloadURL(upload.snapshot.ref).then(async (url) => {
-            console.log(url);
-            await updateDoc(doc(db, "applicants", resumeDoc.id), {
-              resumeURL: (data.resumeURL = url),
-            });
-          });
-        };
-        setTimeout(uploadUrl, 2000);
+    console.log("all files", fileEntry.getAll("resume"));
 
-        const resumeDoc = await addDoc(collection(db, "applicants"), {
-          fullName: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          currentCompany: data.currentCompany,
-          linkedInUrl: data.linkedInUrl,
-          twitterUrl: data.twitterUrl,
-          githubUrl: data.githubUrl,
-          portfolioUrl: data.portfolioUrl,
-          otherUrl: data.otherUrl,
-          prePronouns: data.prePronouns,
-          addInfo: data.addInfo,
-          gender: data.gender,
-          race: data.race,
-          veteran: data.veteran,
-        });
-        console.log(resumeDoc.id);
-        alert("Submit Sucessfull");
-      } catch (err) {
-        alert(err);
-      }
+    const fileUpload = await fetch("http://localhost:1337/api/upload/", {
+      method: "POST",
+      body: fileEntry,
+    })
+      .then((res) => res.json())
+      .catch((err) => console.log(err));
+
+    console.log("file url:", fileUpload);
+
+    async function UploadForm(formData: any) {
+      const newEntry = {
+        resume: fileUpload[0],
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        currentCompany: formData.currentCompany,
+        linkedInUrl: formData.linkedInUrl,
+        twitterUrl: formData.twitterUrl,
+        githubUrl: formData.githubUrl,
+        portfolioUrl: formData.portfolioUrl,
+        otherUrl: formData.otherUrl,
+        prePronouns: formData.prePronouns,
+        addInfo: formData.addInfo,
+        gender: formData.gender,
+        race: formData.race,
+        veteran: formData.veteran,
+      };
+
+      const addEntry = new FormData();
+      addEntry.append("data", JSON.stringify(newEntry));
+      await fetch("http://localhost:1337/api/applicants/", {
+        method: "POST",
+        body: addEntry,
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
     }
     if (verifyCaptcha === true) {
-      UploadForm(data);
+      UploadForm(formData);
     }
   };
 
