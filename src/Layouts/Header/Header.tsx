@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <OuterDiv className="hmain">
       <InnerDiv>
-        <Heading>Full-Stack Engineer</Heading>
+        <Heading>Full-Stack Engineer (STRAPI)</Heading>
         <SubHeading className="subText">
           REMOTE OR SF BAY AREA/PRODUCT – ENGINEERING /FULL-TIME
         </SubHeading>
