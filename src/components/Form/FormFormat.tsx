@@ -54,21 +54,17 @@ const FormFormat = () => {
   const onSubmit: SubmitHandler<FormProps> = async (formData) => {
     console.log(formData);
 
-    let file: File = formData.resume[0];
-    console.log("file", file);
     const fileEntry = new FormData();
-    fileEntry.append("resume", file);
-
-    console.log("all files", fileEntry.getAll("resume"));
+    fileEntry.append("files", formData.resume[0]);
 
     const fileUpload = await fetch("http://localhost:1337/api/upload/", {
       method: "POST",
       body: fileEntry,
     })
-      .then((res) => res.json())
+      .then((response) => response.json())
       .catch((err) => console.log(err));
 
-    console.log("file url:", fileUpload);
+    console.log("file upload", fileUpload);
 
     async function UploadForm(formData: any) {
       const newEntry = {
@@ -95,8 +91,8 @@ const FormFormat = () => {
         method: "POST",
         body: addEntry,
       })
-        .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((response) => response.json())
+        .then((data) => console.log("data", data))
         .catch((err) => console.log(err));
     }
     if (verifyCaptcha === true) {
@@ -329,3 +325,19 @@ const FormFormat = () => {
 };
 
 export default FormFormat;
+
+// let file: File = formData.resume[0];
+// console.log("file", file);
+// const fileEntry = new FormData();
+// fileEntry.append("resume", file);
+
+// console.log("all files", fileEntry.getAll("resume"));
+
+// const fileUpload = await fetch("http://localhost:1337/api/upload/", {
+//   method: "POST",
+//   body: fileEntry,
+// })
+//   .then((res) => res.json())
+//   .catch((err) => console.log(err));
+
+// console.log("file url:", fileUpload);
