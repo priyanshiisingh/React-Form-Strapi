@@ -325,19 +325,3 @@ const FormFormat = () => {
 };
 
 export default FormFormat;
-
-// let file: File = formData.resume[0];
-// console.log("file", file);
-// const fileEntry = new FormData();
-// fileEntry.append("resume", file);
-
-// console.log("all files", fileEntry.getAll("resume"));
-
-// const fileUpload = await fetch("http://localhost:1337/api/upload/", {
-//   method: "POST",
-//   body: fileEntry,
-// })
-//   .then((res) => res.json())
-//   .catch((err) => console.log(err));
-
-// console.log("file url:", fileUpload);
