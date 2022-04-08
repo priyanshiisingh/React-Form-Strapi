@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# React Form Strapi
+
+This form is created using React hook form, typescript and bootstrap, it accepts user information and uploads it to the strapi database. The user can upload their resume and sent in data. It also involves react captcha verification, which verifies the data and then sends it to the database or else provides errors.
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
